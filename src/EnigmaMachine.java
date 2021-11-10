@@ -21,8 +21,7 @@ import java.awt.event.KeyEvent;
 
 public class EnigmaMachine {
 
-	private JFrame frame;
-	private String userInput = "";
+	private static String userInput = "";
 	
 	private String EncodedTranslate = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
@@ -38,13 +37,14 @@ public class EnigmaMachine {
 	
 	
 
-	private int index, tempNumHold, testNum, selectedRotor1, selectedRotor2, selectedRotor3;
-	private char tempCharHold;
+	private static int index; 
+	private static int tempNumHold, testNum, selectedRotor1, selectedRotor2, selectedRotor3;
+	private static char tempCharHold;
 
-	private char[][] RotorSlot1 = new char[2][26];
-	private char[][] RotorSlot2 = new char[2][26];
-	private char[][] RotorSlot3 = new char[2][26];
-	private char[][] Reflector = new char[2][26];
+	private static char[][] RotorSlot1 = new char[2][26];
+	private static char[][] RotorSlot2 = new char[2][26];
+	private static char[][] RotorSlot3 = new char[2][26];
+	private static char[][] Reflector = new char[2][26];
 	
 	private int[][] RotorAvailable = new int[2][5];
 
@@ -52,9 +52,9 @@ public class EnigmaMachine {
 	 * RotorAvailable built into two columns. Column 0 are the Rotors 1 through 5. Column 1 will be 1 or 0 for if it is available or not (boolean).
 	 */
 	
-	private int Rotor1Pos = 1;
-	private int Rotor2Pos = 1;
-	private int Rotor3Pos = 1;
+	private static int Rotor1Pos = 1;
+	private static int Rotor2Pos = 1;
+	private static int Rotor3Pos = 1;
 	
 	
 	
@@ -67,18 +67,8 @@ public class EnigmaMachine {
 	 */
 	public static void main(String[] args) {
 		
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					EnigmaMachine window = new EnigmaMachine();
-					window.frame.setVisible(true);
-				} 
-				catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-			}
-		});
+		EnigmaMachine window = new EnigmaMachine();
+		
 	}
 	
 	
@@ -118,100 +108,28 @@ public class EnigmaMachine {
 			RotorSlot3[1][index] = EncodedRotor3.charAt(index);
 		}
 		
-		
-		
-		RunningApp();
+		EnigmaGUI.StartEnigmaGUI();
 	}
 	
 
   /*************************************************************************************************************************************************************/
 
 	
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void RunningApp() {
-
+	public static char PassKeyPress(char pressedKey, int ascii) {
 		
+		pressedKey = Character.toUpperCase(pressedKey);
+		char encodedKey = (Character) null;
 		
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 400);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		if (ascii >= 65 && ascii <= 90) {
+			encodedKey = EncodeChar(pressedKey, ascii);	
+			userInput += encodedKey;
+		}
+		else {}
 		
-		JButton btnTypeControl = new JButton("Select to Type");
+		CheckNewLine();
 		
-		btnTypeControl.setBounds(125, 116, 200, 23);
-		frame.getContentPane().add(btnTypeControl);
-		
-		JTextPane textMessageDisplay = new JTextPane();
-		textMessageDisplay.setBounds(25, 150, 385, 200);
-		frame.getContentPane().add(textMessageDisplay);
-		
-		
-		//***********Rotor Position Select and Display***********************//
-		JTextPane textRotorPos1 = new JTextPane();
-		textRotorPos1.setBounds(275, 75, 50, 25);
-		frame.getContentPane().add(textRotorPos1);
-		
-		JTextPane textRotorPos2 = new JTextPane();
-		textRotorPos2.setBounds(200, 75, 50, 25);
-		frame.getContentPane().add(textRotorPos2);
-		
-		JTextPane textRotorPos3 = new JTextPane();
-		textRotorPos3.setBounds(125, 75, 50, 25);
-		frame.getContentPane().add(textRotorPos3);
-		
-		
-		//***********Label Boxes********************************************//
-		JLabel lblRotors = new JLabel("Rotors");
-		lblRotors.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblRotors.setBounds(204, 10, 46, 14);
-		frame.getContentPane().add(lblRotors);
-		
-		JLabel lblRotorPosition = new JLabel("Position");
-		lblRotorPosition.setFont(lblRotorPosition.getFont().deriveFont(lblRotorPosition.getFont().getStyle() | Font.BOLD));
-		lblRotorPosition.setBounds(200, 60, 46, 14);
-		frame.getContentPane().add(lblRotorPosition);
-		
-		
-		//***********Rotor Selection and Display***************************//
-		JComboBox comboBoxRotorSelect1 = new JComboBox();
-		comboBoxRotorSelect1.setBounds(125, 30, 50, 22);
-		frame.getContentPane().add(comboBoxRotorSelect1);
-		
-		JComboBox comboBoxRotorSelect2 = new JComboBox();
-		comboBoxRotorSelect2.setBounds(200, 30, 50, 22);
-		frame.getContentPane().add(comboBoxRotorSelect2);
-		
-		JComboBox comboBoxRotorSelect3 = new JComboBox();
-		comboBoxRotorSelect3.setBounds(275, 30, 50, 22);
-		frame.getContentPane().add(comboBoxRotorSelect3);
-		
-		btnTypeControl.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent e) {
-				int ascii = e.getKeyCode();
-				char pressedKey = e.getKeyChar();
-				pressedKey = Character.toUpperCase(pressedKey);
-				char encodedKey;
-				
-				if (ascii >= 65 && ascii <= 90) {
-					encodedKey = EncodeChar(pressedKey, ascii);	
-					userInput += encodedKey;
-				}
-				else {}
-				
-				CheckNewLine();
-				textMessageDisplay.setText(userInput);
-					
-				textRotorPos1.setText("" + Rotor1Pos);
-				textRotorPos2.setText("" + Rotor2Pos);
-				textRotorPos3.setText("" + Rotor3Pos);				
-				
-			}
-		});
-		
-	}
+	return encodedKey;
+	} 
 	
 	
   /*************************************************************************************************************************************************************/
@@ -416,7 +334,7 @@ public class EnigmaMachine {
   /*************************************************************************************************************************************************************/
 	
 	
-	public char EncodeChar(char pressed, int asciiValue) {
+	public static char EncodeChar(char pressed, int asciiValue) {
 		int ascii = (asciiValue - 65);
 		char output;
 		
@@ -502,7 +420,7 @@ public class EnigmaMachine {
   /*************************************************************************************************************************************************************/
 	
 	
-	public void CycleRotors() {
+	public static void CycleRotors() {
 		
 		//Rotate Rotor 1;
 		for(testNum = 0; testNum <=1; testNum++) {
@@ -558,7 +476,7 @@ public class EnigmaMachine {
   /*************************************************************************************************************************************************************/
 
 	
-	public void CheckNewLine() {
+	public static void CheckNewLine() {
 		testNum = 0;
 		tempNumHold = userInput.length();
 		testNum = tempNumHold % 45;
@@ -573,7 +491,22 @@ public class EnigmaMachine {
 	
   /*************************************************************************************************************************************************************/
 	
+	public static String SendUserInput() {
+		return userInput;
+	}
 	
+	public static int SendRotor1Pos() {
+		return Rotor1Pos;
+	}
+	
+	public static int SendRotor2Pos() {
+		return Rotor2Pos;
+	}
+
+	public static int SendRotor3Pos() {
+	return Rotor3Pos;
+}
+
 	
 } //end of class
 
