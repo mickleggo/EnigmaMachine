@@ -1,17 +1,24 @@
+package EntireMachine;
 import java.awt.*;
 import javax.swing.*;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 
 /**
  * Currently runs correctly with Rotor Slots 1, 2, and 3 hard set as rotors 1, 2, and 3 respectively. All rotors start at position 1.
  * Testing however has shown that everything runs correctly on the side of encrypting and decrypting.
  * 
  * There is additional code added not currently used as I have started on the next stage however setting up a working as is version for
- * github to fall back on. Additionally the entire program is currently one class. I do intent to change this to at least two classes
- * in the future.
+ * github to fall back on. 
  * 
- * Release as version 0.1.0
+ * Program now runs as accurately as version 0.1.0 but is now split into multiple classes.
+ * 
+ * Release as version 0.2.0
+ * 
+ * Once some time has been spent to add proper comments, increment version by 0.0.1
+ * 
+ * Next version will work on selecting rotors.
  * 
  * Author: Michael Legg
  */
@@ -21,32 +28,35 @@ import java.awt.event.KeyEvent;
 
 public class EnigmaMachine {
 
-	private static String userInput = "";
+	private EnigmaGUI gui = new EnigmaGUI();
+	private KeyPressHandler kHandler = new KeyPressHandler();
+	private DisplayUpdate dManager = new DisplayUpdate(gui);
 	
-	private String EncodedTranslate = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private static String userInput = String.valueOf('\0');
 	
-	private String EncodedRotor1 = "EKMFLGDQVZNTOWYHXUSPAIBRCJ";
-	private String EncodedRotor2 = "AJDKSIRUXBLHWTMCQGZNPYFVOE";
-	private String EncodedRotor3 = "BDFHJLCPRTXVZNYEIWGAKMUSQO";
-	private String EncodedRotor4 = "ESOVPZJAYQUIRHXLNFTGKDCMWB";
-	private String EncodedRotor5 = "VZBRGITYUPSDNHLXAWMJQOFECK";
+	private static String EncodedTranslate = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
-	private String EncodedReflector1 = "EJMZALYXVBWFCRQUONTSPIKHGD";
-	private String EncodedReflector2 = "YRUHQSLDPXNGOKMIEBFZCWVJAT";
-	private String EncodedReflector3 = "FVPJIAOYEDRZXWGCTKUQSBNMHL";
+	private static String EncodedRotor1 = "EKMFLGDQVZNTOWYHXUSPAIBRCJ";
+	private static String EncodedRotor2 = "AJDKSIRUXBLHWTMCQGZNPYFVOE";
+	private static String EncodedRotor3 = "BDFHJLCPRTXVZNYEIWGAKMUSQO";
+	private static String EncodedRotor4 = "ESOVPZJAYQUIRHXLNFTGKDCMWB";
+	private static String EncodedRotor5 = "VZBRGITYUPSDNHLXAWMJQOFECK";
 	
-	
+	private static String EncodedReflector1 = "EJMZALYXVBWFCRQUONTSPIKHGD";
+	private static String EncodedReflector2 = "YRUHQSLDPXNGOKMIEBFZCWVJAT";
+	private static String EncodedReflector3 = "FVPJIAOYEDRZXWGCTKUQSBNMHL";
 
-	private static int index; 
+	private static int index, ascii; 
 	private static int tempNumHold, testNum, selectedRotor1, selectedRotor2, selectedRotor3;
-	private static char tempCharHold;
+	private static char tempCharHold, output;
+	private static char pressedKey, encodedKey;
 
 	private static char[][] RotorSlot1 = new char[2][26];
 	private static char[][] RotorSlot2 = new char[2][26];
 	private static char[][] RotorSlot3 = new char[2][26];
 	private static char[][] Reflector = new char[2][26];
 	
-	private int[][] RotorAvailable = new int[2][5];
+	private static int[][] RotorAvailable = new int[2][5];
 
 	/*
 	 * RotorAvailable built into two columns. Column 0 are the Rotors 1 through 5. Column 1 will be 1 or 0 for if it is available or not (boolean).
@@ -67,7 +77,7 @@ public class EnigmaMachine {
 	 */
 	public static void main(String[] args) {
 		
-		EnigmaMachine window = new EnigmaMachine();
+		new EnigmaMachine();
 		
 	}
 	
@@ -108,28 +118,9 @@ public class EnigmaMachine {
 			RotorSlot3[1][index] = EncodedRotor3.charAt(index);
 		}
 		
-		EnigmaGUI.StartEnigmaGUI();
+		gui.EnigmaGUI(kHandler);
+	
 	}
-	
-
-  /*************************************************************************************************************************************************************/
-
-	
-	public static char PassKeyPress(char pressedKey, int ascii) {
-		
-		pressedKey = Character.toUpperCase(pressedKey);
-		char encodedKey = (Character) null;
-		
-		if (ascii >= 65 && ascii <= 90) {
-			encodedKey = EncodeChar(pressedKey, ascii);	
-			userInput += encodedKey;
-		}
-		else {}
-		
-		CheckNewLine();
-		
-	return encodedKey;
-	} 
 	
 	
   /*************************************************************************************************************************************************************/
@@ -332,15 +323,33 @@ public class EnigmaMachine {
 	
 	
   /*************************************************************************************************************************************************************/
+
 	
-	
-	public static char EncodeChar(char pressed, int asciiValue) {
-		int ascii = (asciiValue - 65);
-		char output;
+	public static void PassKeyPress() {
 		
+		encodedKey = '\0';
+		
+		if (ascii >= 65 && ascii <= 90) {
+			EncodeChar();
+				userInput += String.valueOf(encodedKey);
+		}
+		else {}
+		
+		CheckNewLine();
+		
+	return;
+	} 
+	
+	
+  /*************************************************************************************************************************************************************/
+	
+	
+	public static void EncodeChar() {
+		
+		ascii = (ascii - 65);
 		
 		//Key Input
-		char input = pressed;
+		char input = pressedKey;
 		
 			
 		//Input to Rotor1
@@ -408,12 +417,12 @@ public class EnigmaMachine {
 
 		
 		//Rotor1 to Output
-		output = (char)(index+65);
+		encodedKey = (char)(index+65);
 
 		
 		CycleRotors();
 		
-		return output;
+		return;
 	}
 	
 	
@@ -508,7 +517,32 @@ public class EnigmaMachine {
 }
 
 	
-} //end of class
+	  /*************************************************************************************************************************************************************/
+	
+		public class KeyPressHandler implements KeyListener {
+
+			public void keyPressed(KeyEvent e) {
+				ascii = e.getKeyCode();
+				pressedKey = e.getKeyChar();
+				pressedKey = Character.toUpperCase(pressedKey);
+				EnigmaMachine.PassKeyPress();
+				dManager.updateDisplay();
+				
+			}
+
+			public void keyTyped(KeyEvent e) {
+			}
+			
+			public void keyReleased(KeyEvent e) {
+			}
+
+
+				
+		
+		} //end of class KeyPressHandler
+	
+	
+} //end of class EnigmaMachine
 
 
 
