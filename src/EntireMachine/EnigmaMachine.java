@@ -14,7 +14,7 @@ import java.awt.event.KeyListener;
  * 
  * Program now runs as accurately as version 0.1.0 but is now split into multiple classes.
  * 
- * Release as version 0.2.0
+ * Release as EnigmaMachine Version 0.2.0
  * 
  * Once some time has been spent to add proper comments, increment version by 0.0.1
  * 
