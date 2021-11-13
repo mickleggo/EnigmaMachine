@@ -6,6 +6,7 @@ import EntireMachine.EnigmaMachine.RSlot1Handler;
 import EntireMachine.EnigmaMachine.RSlot2Handler;
 import EntireMachine.EnigmaMachine.RSlot3Handler;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class EnigmaGUI {
 
 	JFrame frame;
@@ -19,7 +20,9 @@ public class EnigmaGUI {
 	
 	private static String[] possibleRotors = { String.valueOf('\0'),"I", "II", "III", "IV", "V" };
 	
-	private Container con;
+//	private Container con;
+	
+
 	
 	
 	/**
@@ -85,10 +88,10 @@ public class EnigmaGUI {
 		frame.getContentPane().add(comboBoxRotorSelect3);
 		
 		
-		con = frame.getContentPane();
+//		con = frame.getContentPane();
 		frame.setVisible(true);
 
-	
+		return;
 	}
 
 	

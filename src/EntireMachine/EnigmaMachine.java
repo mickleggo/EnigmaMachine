@@ -6,19 +6,23 @@ import java.awt.event.KeyListener;
 
 
 /**
- * Currently runs correctly with Rotor Slots 1, 2, and 3 hard set as rotors 1, 2, and 3 respectively. All rotors start at position 1.
- * Testing however has shown that everything runs correctly on the side of encrypting and decrypting.
- * 
- * There is additional code added not currently used as I have started on the next stage however setting up a working as is version for
- * github to fall back on. 
- * 
+ * Rotors selectable, can currently put multiple of same rotor in different slots. All rotors start at position 1.
+ 
  * Program now runs as accurately as version 0.1.0 but is now split into multiple classes.
  * 
- * Release as EnigmaMachine Version 0.2.0
+ * Release as EnigmaMachine Version 0.3.0
  * 
  * Once some time has been spent to add proper comments, increment version by 0.0.1
  * 
- * Next version will work on selecting rotors.
+ * Work still to be done:
+ * - Implement rest of Rotor Selection features such
+ * as only being able to use each rotor in one place and with one rotor
+ * selected, remove from other lists.
+ * - Implement Selecting start position
+ * - Implement Display letter for for rotor position (as per original enigma machine)
+ * - add clear button to remove all text and other selections, ie: rotors, position.
+ * - add button to export encrypted/decrypted message to txt file.
+ * - implement plug board
  * 
  * Author: Michael Legg
  */
@@ -95,7 +99,6 @@ public class EnigmaMachine {
 		
 		gui.EnigmaGUI(kHandler, r1Handler, r2Handler, r3Handler);
 		dManager.updateDisplay();
-		dManager.updateRotorSelection();
 	
 	}
 	
