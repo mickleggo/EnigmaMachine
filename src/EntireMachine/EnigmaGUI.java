@@ -2,6 +2,9 @@ package EntireMachine;
 import java.awt.*;
 import javax.swing.*;
 import EntireMachine.EnigmaMachine.KeyPressHandler;
+import EntireMachine.EnigmaMachine.RSlot1Handler;
+import EntireMachine.EnigmaMachine.RSlot2Handler;
+import EntireMachine.EnigmaMachine.RSlot3Handler;
 
 public class EnigmaGUI {
 
@@ -14,8 +17,7 @@ public class EnigmaGUI {
 	JLabel lblRotors, lblRotorPosition;
 	JComboBox comboBoxRotorSelect1, comboBoxRotorSelect2, comboBoxRotorSelect3;
 	
-	private int ascii, Rotor1Pos, Rotor2Pos, Rotor3Pos;;
-	private char pressedKey, encodedKey;
+	private static String[] possibleRotors = { String.valueOf('\0'),"I", "II", "III", "IV", "V" };
 	
 	private Container con;
 	
@@ -23,7 +25,7 @@ public class EnigmaGUI {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	public void EnigmaGUI(KeyPressHandler kHandler) {
+	public void EnigmaGUI(KeyPressHandler kHandler, RSlot1Handler r1Handler, RSlot2Handler r2Handler, RSlot3Handler r3Handler) {
 
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 400);
@@ -67,16 +69,19 @@ public class EnigmaGUI {
 		
 		
 		//***********Rotor Selection and Display***************************//
-		comboBoxRotorSelect1 = new JComboBox();
+		comboBoxRotorSelect1 = new JComboBox(possibleRotors);
 		comboBoxRotorSelect1.setBounds(125, 30, 50, 22);
+		comboBoxRotorSelect1.addActionListener(r1Handler);
 		frame.getContentPane().add(comboBoxRotorSelect1);
 		
-		comboBoxRotorSelect2 = new JComboBox();
+		comboBoxRotorSelect2 = new JComboBox(possibleRotors);
 		comboBoxRotorSelect2.setBounds(200, 30, 50, 22);
+		comboBoxRotorSelect2.addActionListener(r2Handler);
 		frame.getContentPane().add(comboBoxRotorSelect2);
 		
-		comboBoxRotorSelect3 = new JComboBox();
+		comboBoxRotorSelect3 = new JComboBox(possibleRotors);
 		comboBoxRotorSelect3.setBounds(275, 30, 50, 22);
+		comboBoxRotorSelect3.addActionListener(r3Handler);
 		frame.getContentPane().add(comboBoxRotorSelect3);
 		
 		
@@ -85,5 +90,6 @@ public class EnigmaGUI {
 
 	
 	}
+
 	
 }
