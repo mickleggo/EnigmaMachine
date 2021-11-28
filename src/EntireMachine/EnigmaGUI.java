@@ -1,6 +1,8 @@
 package EntireMachine;
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.GroupLayout.Alignment;
+
 import EntireMachine.EnigmaMachine.KeyPressHandler;
 import EntireMachine.EnigmaMachine.RSlot1Handler;
 import EntireMachine.EnigmaMachine.RSlot2Handler;
@@ -16,6 +18,7 @@ public class EnigmaGUI {
 	JTextPane textRotorPos2;
 	JTextPane textRotorPos3;
 	JLabel lblRotors, lblRotorPosition;
+	JLabel comboBoxRotor1Display, comboBoxRotor2Display, comboBoxRotor3Display;
 	JComboBox comboBoxRotorSelect1, comboBoxRotorSelect2, comboBoxRotorSelect3;
 	
 	private static String[] possibleRotors = { String.valueOf('\0'),"I", "II", "III", "IV", "V" };
@@ -86,6 +89,24 @@ public class EnigmaGUI {
 		comboBoxRotorSelect3.setBounds(275, 30, 50, 22);
 		comboBoxRotorSelect3.addActionListener(r3Handler);
 		frame.getContentPane().add(comboBoxRotorSelect3);
+		
+		comboBoxRotor1Display = new JLabel("", SwingConstants.CENTER);
+		comboBoxRotor1Display.setFont(new Font("Tahoma", Font.BOLD, 12));
+		comboBoxRotor1Display.setBounds(125, 30, 50, 22);
+		frame.getContentPane().add(comboBoxRotor1Display);
+		comboBoxRotor1Display.setVisible(false);
+	
+		comboBoxRotor2Display = new JLabel("", SwingConstants.CENTER);
+		comboBoxRotor2Display.setFont(new Font("Tahoma", Font.BOLD, 12));
+		comboBoxRotor2Display.setBounds(200, 30, 50, 22);
+		frame.getContentPane().add(comboBoxRotor2Display);
+		comboBoxRotor2Display.setVisible(false);
+		
+		comboBoxRotor3Display = new JLabel("", SwingConstants.CENTER);
+		comboBoxRotor3Display.setFont(new Font("Tahoma", Font.BOLD, 12));
+		comboBoxRotor3Display.setBounds(275, 30, 50, 22);
+		frame.getContentPane().add(comboBoxRotor3Display);
+		comboBoxRotor3Display.setVisible(false);
 		
 		
 //		con = frame.getContentPane();

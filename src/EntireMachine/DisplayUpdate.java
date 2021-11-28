@@ -23,6 +23,8 @@ public class DisplayUpdate {
 		
 	}
 	
+	
+	
 //	public void updateRotorSelection() {
 //		
 //		String[] displayRotors = new String[5];
