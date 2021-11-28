@@ -14,15 +14,39 @@ import java.awt.event.KeyListener;
  * 
  * Once some time has been spent to add proper comments, increment version by 0.0.1
  * 
- * Work still to be done:
- * - Implement rest of Rotor Selection features such
- * as only being able to use each rotor in one place and with one rotor
- * selected, remove from other lists.
- * - Implement Selecting start position
- * - Implement Display letter for for rotor position (as per original enigma machine)
- * - add clear button to remove all text and other selections, ie: rotors, position.
- * - add button to export encrypted/decrypted message to txt file.
- * - implement plug board
+ * Implementaion and release plan still to work on:
+ * 
+ * 0.5.0 remove selected rotors from other dropdown and re-add as available if removed.
+ * 
+ * 0.6.0 implement selectable start position
+ * 
+ * 0.7.0 change position from number to character representation
+ * 
+ * 0.8.0 add "export to text" button, add "clear all/reset" button
+ * 
+ * 0.8.5 add top bar menu with "about" or similar. eg. a model tag
+ * 
+ * 0.8.6 finish adding notes if not already complete.
+ * 
+ * 1.0.0 package as a full release version 1
+ * 
+ * 1.1.0 design plugboard and add single cable/connector
+ * 
+ * 1.2.0 add show/hide plugboard button
+ * 
+ * 1.3.0 implement full ten "cables"
+ * 
+ * 1.4.0 add "remove all" button for removing all cables.
+ * 
+ * 1.5.0 add and implement additional reflectors
+ * 
+ * 2.0.0 package as full release version 2
+ * 
+ * 2.0.1 plan additional beautification and functions including:
+ * - add drag/drop funtion to connector plugboard
+ * - add drag/drop function for rotors
+ * - add rotate function for rotors
+ * 3.0.0 release as full release version 3
  * 
  * Author: Michael Legg
  */
@@ -253,7 +277,7 @@ public class EnigmaMachine {
 	
 	
 	public void PositionSet(int selectedRotor, int setPosition) {
-		int rotate = 0;
+//		int rotate = 0;
 		
 //		//*********Set Rotor1 Position*******************//
 //		if (selectedRotor == 1) {
@@ -575,6 +599,10 @@ public class EnigmaMachine {
 					case "V":
 						selectedRotor1 = 5;
 						EnigmaMachine.SetRotor1(5);
+						break;
+					
+					case "\0":
+						selectedRotor1 = 0;
 						break;
 						
 					default:
