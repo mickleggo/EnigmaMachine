@@ -23,29 +23,31 @@ public class DisplayUpdate {
 		
 	}
 	
-	public void updateRotorSelection() {
-		
-		String[] displayRotors = new String[5];
-		String passStr = "\0";
-		int dRotorLength = 0;
-		
-		for (int index = 0; index < 5; index++) {
-			try {
-				passStr = EnigmaMachine.availableRotor(index);
-			}
-			catch (Exception e){
-				System.out.println("catch error in DisplayUpdate.updateRotorSelection()");
-			}
-			
-			if (passStr == "false") {	
-			}
-			else {
-				displayRotors[dRotorLength] = passStr; 
-				dRotorLength++;
-			}
-			
-		}
-		
-	}
+	
+	
+//	public void updateRotorSelection() {
+//		
+//		String[] displayRotors = new String[5];
+//		String passStr = "\0";
+//		int dRotorLength = 0;
+//		
+//		for (int index = 0; index < 5; index++) {
+//			try {
+//				passStr = EnigmaMachine.availableRotor(index);
+//			}
+//			catch (Exception e){
+//				System.out.println("catch error in DisplayUpdate.updateRotorSelection()");
+//			}
+//			
+//			if (passStr == "false") {	
+//			}
+//			else {
+//				displayRotors[dRotorLength] = passStr; 
+//				dRotorLength++;
+//			}
+//			
+//		}
+//		
+//	}
 	
 }

@@ -2,12 +2,6 @@ package EntireMachine;
 
 public class Rotors {
 	
-	private Rotor1 R1 = new Rotor1();
-	private Rotor2 R2 = new Rotor2();
-	private Rotor3 R3 = new Rotor3();
-	private Rotor4 R4 = new Rotor4();
-	private Rotor5 R5 = new Rotor5();
-	
 	/*************************************************************************************************************************************************************/
 	
 	public static class Rotor1 {
