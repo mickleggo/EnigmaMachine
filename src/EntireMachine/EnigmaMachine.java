@@ -61,6 +61,9 @@ public class EnigmaMachine {
 	private RSlot2Handler r2Handler = new RSlot2Handler();
 	private RSlot3Handler r3Handler = new RSlot3Handler();
 	private DisplayUpdate dManager = new DisplayUpdate(gui);
+	private R1PosHandler p1Handler = new R1PosHandler();
+	private R2PosHandler p2Handler = new R2PosHandler();
+	private R3PosHandler p3Handler = new R3PosHandler();
 	
 	private static String userInput = String.valueOf('\0');
 	
@@ -120,7 +123,7 @@ public class EnigmaMachine {
 			Reflector[1][index] = EncodedReflector1.charAt(index);
 		}
 		
-		gui.EnigmaGUI(kHandler, r1Handler, r2Handler, r3Handler);
+		gui.EnigmaGUI(kHandler, r1Handler, r2Handler, r3Handler, p1Handler, p2Handler, p3Handler);
 		dManager.updateDisplay();
 	
 	}
@@ -275,60 +278,64 @@ public class EnigmaMachine {
   /*************************************************************************************************************************************************************/
 	
 	
-	public void PositionSet(int selectedRotor, int setPosition) {
-//		int rotate = 0;
+	public void PositionSet(int rotorSlotRotate, int selectedRotor, int setPosition) {
+		int rotate = 0;
 		
-//		//*********Set Rotor1 Position*******************//
-//		if (selectedRotor == 1) {
-//			for (rotate = 0; rotate < setPosition-1; rotate++) {
-//				for(testNum = 0; testNum <=1; testNum++) {
-//					tempCharHold = RotorSlot1[testNum][0];
-//				
-//					for(index = 1; index <= 25; index++) {
-//						RotorSlot1[testNum][index-1] = RotorSlot1[testNum][index];
-//					}
-//					RotorSlot1[testNum][index-1] = tempCharHold;
-//				}
-//			}
-//			Rotor1Pos = setPosition;
-//		}
-//		else{};
-//		
-//		
-//		//*********Set Rotor2 Position*******************//
-//		if (selectedRotor == 2) {
-//			for (rotate = 0; rotate < setPosition-1; rotate++) {
-//				for(testNum = 0; testNum <=1; testNum++) {
-//					tempCharHold = RotorSlot1[testNum][0];
-//				
-//					for(index = 1; index <= 25; index++) {
-//						RotorSlot2[testNum][index-1] = RotorSlot2[testNum][index];
-//					}
-//					RotorSlot2[testNum][index-1] = tempCharHold;
-//				}
-//			}
-//			Rotor2Pos = setPosition;
-//		}
-//		else{};
-//		
-//		
-//		//*********Set Rotor3 Position*******************//
-//		if (selectedRotor == 3) {
-//			for (rotate = 0; rotate < setPosition-1; rotate++) {
-//				for(testNum = 0; testNum <=1; testNum++) {
-//					tempCharHold = RotorSlot1[testNum][0];
-//				
-//					for(index = 1; index <= 25; index++) {
-//						RotorSlot3[testNum][index-1] = RotorSlot3[testNum][index];
-//					}
-//					RotorSlot3[testNum][index-1] = tempCharHold;
-//				}
-//			}
-//			Rotor3Pos = setPosition;
-//		}
-//		else{};
-//		
-//		return;
+		//*********Set Rotor1 Position*******************//
+		if (rotorSlotRotate == 1) {
+			for (rotate = 0; rotate < setPosition-1; rotate++) {
+				for(testNum = 0; testNum <=1; testNum++) {
+					tempCharHold = RotorSlot1[testNum][0];
+				
+					for(index = 1; index <= 25; index++) {
+						RotorSlot1[testNum][index-1] = RotorSlot1[testNum][index];
+					}
+					RotorSlot1[testNum][index-1] = tempCharHold;
+				}
+			}
+			Rotor1Pos = setPosition;
+		}
+		else{};
+		
+		
+		//*********Set Rotor2 Position*******************//
+		if (rotorSlotRotate == 2) {
+			for (rotate = 0; rotate < setPosition-1; rotate++) {
+				for(testNum = 0; testNum <=1; testNum++) {
+					tempCharHold = RotorSlot2[testNum][0];
+				
+					for(index = 1; index <= 25; index++) {
+						RotorSlot2[testNum][index-1] = RotorSlot2[testNum][index];
+					}
+					RotorSlot2[testNum][index-1] = tempCharHold;
+				}
+			}
+			Rotor2Pos = setPosition;
+		}
+		else{};
+		
+		
+		//*********Set Rotor3 Position*******************//
+		if (rotorSlotRotate == 3) {
+			for (rotate = 0; rotate < setPosition-1; rotate++) {
+				for(testNum = 0; testNum <=1; testNum++) {
+					tempCharHold = RotorSlot3[testNum][0];
+				
+					for(index = 1; index <= 25; index++) {
+						RotorSlot3[testNum][index-1] = RotorSlot3[testNum][index];
+					}
+					RotorSlot3[testNum][index-1] = tempCharHold;
+				}
+			}
+			Rotor3Pos = setPosition;
+		}
+		else{};
+		
+		System.out.println("Slot 1 - Left " + RotorSlot1[0][0] + " : Right " + RotorSlot1[1][0]);
+		System.out.println("Slot 2 - Left " + RotorSlot2[0][0] + " : Right " + RotorSlot2[1][0]);
+		System.out.println("Slot 3 - Left " + RotorSlot3[0][0] + " : Right " + RotorSlot3[1][0] + "\n\n");
+		
+		return;
 	}//end of PositionSet()
 	
 	
@@ -550,6 +557,8 @@ public class EnigmaMachine {
 	
 	  /*************************************************************************************************************************************************************/
 	
+	 /************************** Handles rotor selection *************************************/
+	
 		public class KeyPressHandler implements KeyListener {
 
 			public void keyPressed(KeyEvent e) {
@@ -631,6 +640,11 @@ public class EnigmaMachine {
 					default:
 						System.out.println("RSlot1 Error");	
 				}
+				
+				for (int index = 0; index < 26; index++) {
+					gui.RotorPos1.insertItemAt(RotorSlot1[1][index], index);
+				}
+				gui.RotorPos1.setVisible(true);
 			}
 		} //end of class RotorHandler
 		
@@ -696,6 +710,11 @@ public class EnigmaMachine {
 					default:
 						System.out.println("RSlot2 Error");	
 				}
+				
+				for (int index = 0; index < 26; index++) {
+					gui.RotorPos2.insertItemAt(RotorSlot2[1][index], index);
+				}
+				gui.RotorPos2.setVisible(true);
 			}
 		} //end of class RotorHandler
 		
@@ -761,8 +780,70 @@ public class EnigmaMachine {
 					default:
 						System.out.println("RSlot3 Error");	
 				}
+				
+				for (int index = 0; index < 26; index++) {
+					gui.RotorPos3.insertItemAt(RotorSlot3[1][index], index);
+				}
+				gui.RotorPos3.setVisible(true);
 			}
 		} //end of class RotorHandler
+		
+		
+		/*************************************************************************************************************************************************************/
+		
+		/************************** Handles rotor positions *************************************/
+		
+		public class R1PosHandler implements ActionListener{
+
+			public void actionPerformed(ActionEvent e) {
+				String rp1 = e.getSource().toString();
+				rp1 = RotorActionSubString.makeSubStr(rp1);
+				char setChar = rp1.charAt(0);
+				int search = 0;
+				while (RotorSlot1[1][search] != setChar) {
+					search++;
+				}
+				search++;
+				PositionSet(1, selectedRotor1, search);
+			}
+			
+		}
+		
+		public class R2PosHandler implements ActionListener{
+
+			public void actionPerformed(ActionEvent e) {
+				String rp2 = e.getSource().toString();
+				rp2 = RotorActionSubString.makeSubStr(rp2);
+				char setChar = rp2.charAt(0);
+				int search = 0;
+				while (RotorSlot2[1][search] != setChar) {
+					search++;
+				}
+				search++;
+				PositionSet(2, selectedRotor2, search);
+			}
+			
+		}
+		
+		public class R3PosHandler implements ActionListener{
+
+
+			public void actionPerformed(ActionEvent e) {
+				String rp3 = e.getSource().toString();
+				rp3 = RotorActionSubString.makeSubStr(rp3);
+				char setChar = rp3.charAt(0);
+				int search = 0;
+				while (RotorSlot3[1][search] != setChar) {
+					search++;
+				}
+				search++;
+				PositionSet(3, selectedRotor3, search);
+			}
+			
+		}
+		
+		
+		/*************************************************************************************************************************************************************/
 		
 		public static class RotorActionSubString {
 			

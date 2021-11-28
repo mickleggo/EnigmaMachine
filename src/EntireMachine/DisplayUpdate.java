@@ -14,12 +14,12 @@ public class DisplayUpdate {
 		String userInput = EnigmaMachine.SendUserInput();
 		gui.textMessageDisplay.setText(userInput);
 		
-		int Rotor1Pos = EnigmaMachine.SendRotor1Pos();
-		int Rotor2Pos = EnigmaMachine.SendRotor2Pos();
-		int Rotor3Pos = EnigmaMachine.SendRotor3Pos();
-		gui.textRotorPos1.setText("" + Rotor1Pos);
-		gui.textRotorPos2.setText("" + Rotor2Pos);
-		gui.textRotorPos3.setText("" + Rotor3Pos);
+//		int Rotor1Pos = EnigmaMachine.SendRotor1Pos();
+//		int Rotor2Pos = EnigmaMachine.SendRotor2Pos();
+//		int Rotor3Pos = EnigmaMachine.SendRotor3Pos();
+//		gui.textRotorPos1.setText("" + Rotor1Pos);
+//		gui.textRotorPos2.setText("" + Rotor2Pos);
+//		gui.textRotorPos3.setText("" + Rotor3Pos);
 		
 	}
 	
