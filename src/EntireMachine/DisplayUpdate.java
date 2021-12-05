@@ -14,40 +14,19 @@ public class DisplayUpdate {
 		String userInput = EnigmaMachine.SendUserInput();
 		gui.textMessageDisplay.setText(userInput);
 		
-//		int Rotor1Pos = EnigmaMachine.SendRotor1Pos();
-//		int Rotor2Pos = EnigmaMachine.SendRotor2Pos();
-//		int Rotor3Pos = EnigmaMachine.SendRotor3Pos();
-//		gui.textRotorPos1.setText("" + Rotor1Pos);
-//		gui.textRotorPos2.setText("" + Rotor2Pos);
-//		gui.textRotorPos3.setText("" + Rotor3Pos);
-		
 	}
 	
-	
-	
-//	public void updateRotorSelection() {
-//		
-//		String[] displayRotors = new String[5];
-//		String passStr = "\0";
-//		int dRotorLength = 0;
-//		
-//		for (int index = 0; index < 5; index++) {
-//			try {
-//				passStr = EnigmaMachine.availableRotor(index);
-//			}
-//			catch (Exception e){
-//				System.out.println("catch error in DisplayUpdate.updateRotorSelection()");
-//			}
-//			
-//			if (passStr == "false") {	
-//			}
-//			else {
-//				displayRotors[dRotorLength] = passStr; 
-//				dRotorLength++;
-//			}
-//			
-//		}
-//		
-//	}
+	public void updateRotors() {
+		
+		char rot1Pos = EnigmaMachine.SendRotor1Pos();
+		char rot2Pos = EnigmaMachine.SendRotor2Pos();
+		char rot3Pos = EnigmaMachine.SendRotor3Pos();
+		
+		gui.SetRotorPos1.setText(String.valueOf(rot1Pos));
+		gui.SetRotorPos2.setText(String.valueOf(rot2Pos));
+		gui.SetRotorPos3.setText(String.valueOf(rot3Pos));
+
+		
+	}
 	
 }

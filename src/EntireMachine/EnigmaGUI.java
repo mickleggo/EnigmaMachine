@@ -69,18 +69,21 @@ public class EnigmaGUI {
 		RotorPos3.setVisible(false);
 		
 		
-		SetRotorPos1 = new JLabel();
+		SetRotorPos1 = new JLabel("", SwingConstants.CENTER);
 		SetRotorPos1.setBounds(275, 75, 50, 25);
+		SetRotorPos1.setFont(new Font("Tahoma", Font.BOLD, 12));
 		frame.getContentPane().add(SetRotorPos1);
 		SetRotorPos1.setVisible(false);
 		
-		SetRotorPos2 = new JLabel();
+		SetRotorPos2 = new JLabel("", SwingConstants.CENTER);
 		SetRotorPos2.setBounds(200, 75, 50, 25);
+		SetRotorPos2.setFont(new Font("Tahoma", Font.BOLD, 12));
 		frame.getContentPane().add(SetRotorPos2);
 		SetRotorPos2.setVisible(false);
 		
-		SetRotorPos3 = new JLabel();
+		SetRotorPos3 = new JLabel("", SwingConstants.CENTER);
 		SetRotorPos3.setBounds(125, 75, 50, 25);
+		SetRotorPos3.setFont(new Font("Tahoma", Font.BOLD, 12));
 		frame.getContentPane().add(SetRotorPos3);
 		SetRotorPos3.setVisible(false);
 		
