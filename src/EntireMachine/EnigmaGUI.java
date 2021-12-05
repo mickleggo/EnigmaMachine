@@ -1,8 +1,6 @@
 package EntireMachine;
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.GroupLayout.Alignment;
-
 import EntireMachine.EnigmaMachine.KeyPressHandler;
 import EntireMachine.EnigmaMachine.R1PosHandler;
 import EntireMachine.EnigmaMachine.R2PosHandler;
@@ -33,7 +31,7 @@ public class EnigmaGUI {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	public void EnigmaGUI(KeyPressHandler kHandler, RSlot1Handler r1Handler, RSlot2Handler r2Handler, RSlot3Handler r3Handler, 
+	public void GUI(KeyPressHandler kHandler, RSlot1Handler r1Handler, RSlot2Handler r2Handler, RSlot3Handler r3Handler, 
 														R1PosHandler p1Handler, R2PosHandler p2Handler, R3PosHandler p3Handler) {
 
 		frame = new JFrame("Enigma Machine");

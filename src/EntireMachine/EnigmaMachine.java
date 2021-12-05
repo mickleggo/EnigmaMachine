@@ -52,7 +52,7 @@ import java.awt.event.KeyListener;
 
 /*************************************************************************************************************************************************************/
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({  "unchecked" })
 public class EnigmaMachine {
 
 	private EnigmaGUI gui = new EnigmaGUI();
@@ -72,8 +72,8 @@ public class EnigmaMachine {
 	private static String EncodedTranslate = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
 	private static String EncodedReflector1 = "EJMZALYXVBWFCRQUONTSPIKHGD";
-	private static String EncodedReflector2 = "YRUHQSLDPXNGOKMIEBFZCWVJAT";
-	private static String EncodedReflector3 = "FVPJIAOYEDRZXWGCTKUQSBNMHL";
+//	private static String EncodedReflector2 = "YRUHQSLDPXNGOKMIEBFZCWVJAT";
+//	private static String EncodedReflector3 = "FVPJIAOYEDRZXWGCTKUQSBNMHL";
 
 	private static int index, ascii; 
 	private static int tempNumHold, testNum, selectedRotor1, selectedRotor2, selectedRotor3;
@@ -123,7 +123,7 @@ public class EnigmaMachine {
 			Reflector[1][index] = EncodedReflector1.charAt(index);
 		}
 		
-		gui.EnigmaGUI(kHandler, r1Handler, r2Handler, r3Handler, p1Handler, p2Handler, p3Handler);
+		gui.GUI(kHandler, r1Handler, r2Handler, r3Handler, p1Handler, p2Handler, p3Handler);
 		dManager.updateDisplay();
 	
 	}
@@ -331,9 +331,7 @@ public class EnigmaMachine {
 		}
 		else{};
 		
-		System.out.println("Slot 1 - Left " + RotorSlot1[0][0] + " : Right " + RotorSlot1[1][0]);
-		System.out.println("Slot 2 - Left " + RotorSlot2[0][0] + " : Right " + RotorSlot2[1][0]);
-		System.out.println("Slot 3 - Left " + RotorSlot3[0][0] + " : Right " + RotorSlot3[1][0] + "\n\n");
+		System.out.println();
 		
 		return;
 	}//end of PositionSet()
@@ -369,14 +367,14 @@ public class EnigmaMachine {
 		char input = pressedKey;
 		
 			
-		//Input to Rotor1
-		input = RotorSlot1[0][ascii];
-		//Through Rotor1
-		index = 0;
-		while(RotorSlot1[1][index] != input) {
-			index++;
-		}
-		
+//		//Input to Rotor1
+//		input = RotorSlot1[0][ascii];
+//		//Through Rotor1
+//		index = 0;
+//		while(RotorSlot1[1][index] != input) {
+//			index++;
+//		}
+//		
 
 		//Input to Rotor2
 		input = RotorSlot2[0][index];
@@ -738,7 +736,7 @@ public class EnigmaMachine {
 						selectedRotor3 = 2;
 						gui.comboBoxRotorSelect1.removeItem("II");
 						gui.comboBoxRotorSelect2.removeItem("II");
-						EnigmaMachine.SetRotor2(2);
+						EnigmaMachine.SetRotor3(2);
 						gui.comboBoxRotorSelect3.setVisible(false);
 						gui.comboBoxRotor3Display.setText("II");
 						gui.comboBoxRotor3Display.setVisible(true);
