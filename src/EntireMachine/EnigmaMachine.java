@@ -105,7 +105,7 @@ public class EnigmaMachine {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		
+	
 		new EnigmaMachine();		
 		
 	}
