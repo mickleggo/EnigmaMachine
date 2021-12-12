@@ -1,7 +1,9 @@
 package EntireMachine;
 import java.awt.*;
 import javax.swing.*;
+import EntireMachine.EnigmaMachine.ButtonHandler;
 import EntireMachine.EnigmaMachine.KeyPressHandler;
+import EntireMachine.EnigmaMachine.MenuHandler;
 import EntireMachine.EnigmaMachine.R1PosHandler;
 import EntireMachine.EnigmaMachine.R2PosHandler;
 import EntireMachine.EnigmaMachine.R3PosHandler;
@@ -13,7 +15,9 @@ import EntireMachine.EnigmaMachine.RSlot3Handler;
 public class EnigmaGUI {
 
 	JFrame frame;
-	JButton btnTypeControl;
+	JMenu menuAbout;
+	JMenuBar menuBar;
+	JButton btnTypeControl, btnClear, btnPrintText;
 	JTextPane textMessageDisplay;
 	JComboBox RotorPos1, RotorPos2, RotorPos3;
 	JLabel SetRotorPos1, SetRotorPos2, SetRotorPos3;
@@ -23,30 +27,51 @@ public class EnigmaGUI {
 	
 	private static String[] possibleRotors = { String.valueOf('\0'),"I", "II", "III", "IV", "V" };
 	
-//	private Container con;
-	
 
 	
 	
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	public void GUI(KeyPressHandler kHandler, RSlot1Handler r1Handler, RSlot2Handler r2Handler, RSlot3Handler r3Handler, 
-														R1PosHandler p1Handler, R2PosHandler p2Handler, R3PosHandler p3Handler) {
+	public void GUI(KeyPressHandler kHandler, RSlot1Handler r1Handler, RSlot2Handler r2Handler, RSlot3Handler r3Handler, R1PosHandler p1Handler,
+											 R2PosHandler p2Handler, R3PosHandler p3Handler, MenuHandler mHandler, ButtonHandler bHandler) {
 
-		frame = new JFrame("Enigma Machine");
-		frame.setBounds(900, 200, 450, 400);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
 		
-		btnTypeControl = new JButton("Select to Type");
-		btnTypeControl.setBounds(125, 116, 200, 23);
-		btnTypeControl.addKeyListener(kHandler);
-		frame.getContentPane().add(btnTypeControl);
+		frame = new JFrame("Enigma Machine");
+		frame.setBounds(900, 200, 450, 425);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
 		
 		textMessageDisplay = new JTextPane();
 		textMessageDisplay.setBounds(25, 150, 385, 200);
 		frame.getContentPane().add(textMessageDisplay);
+		
+		menuBar = new JMenuBar();
+		
+		menuAbout = new JMenu("About");
+		menuAbout.addMenuListener(mHandler);
+		menuBar.add(menuAbout);
+		
+		frame.setJMenuBar(menuBar);
+		
+		
+		//***********Add Buttons***********************//
+		
+		btnTypeControl = new JButton("Select to Type");
+		btnTypeControl.setBounds(160, 116, 120, 23);
+		btnTypeControl.addKeyListener(kHandler);
+		frame.getContentPane().add(btnTypeControl);
+		
+		btnClear = new JButton("Clear");
+		btnClear.setBounds(25, 116, 110, 23);
+		btnClear.addActionListener(bHandler);
+		frame.getContentPane().add(btnClear);
+		
+		btnPrintText = new JButton("Print to Text");
+		btnPrintText.setBounds(305, 116, 110, 23);
+		btnPrintText.addActionListener(bHandler);
+		frame.getContentPane().add(btnPrintText);
+		
 		
 		
 		//***********Rotor Position Select and Display***********************//

@@ -3,6 +3,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
 
 
 /**
@@ -17,16 +22,13 @@ import java.awt.event.KeyListener;
  * Implementaion and release plan still to work on:
  * 
  * 0.6.0 implement selectable start position
- * 
- * 0.7.0 change position from number to character representation   <---COMPLETED TO HERE
- * 
+ * 0.7.0 change position from number to character representation   
  * 0.8.0 add "export to text" button, add "clear all/reset" button
- * 
  * 0.8.5 add top bar menu with "about" or similar. eg. a model tag
  * 
- * 0.8.6 finish adding comments if not already complete.
+ * 1.0.0 package as a full release version 1						<---COMPLETED TO HERE
  * 
- * 1.0.0 package as a full release version 1
+ * 1.0.1 finish adding comments if not already complete. 
  * 
  * 1.1.0 design plugboard and add single cable/connector
  * 
@@ -56,6 +58,9 @@ import java.awt.event.KeyListener;
 public class EnigmaMachine {
 
 	private static EnigmaGUI gui = new EnigmaGUI();
+	private AboutWindow about = new AboutWindow();
+	private MenuHandler mHandler = new MenuHandler();
+	private ButtonHandler bHandler = new ButtonHandler();
 	private KeyPressHandler kHandler = new KeyPressHandler();
 	private RSlot1Handler r1Handler = new RSlot1Handler();
 	private RSlot2Handler r2Handler = new RSlot2Handler();
@@ -65,7 +70,8 @@ public class EnigmaMachine {
 	private R2PosHandler p2Handler = new R2PosHandler();
 	private R3PosHandler p3Handler = new R3PosHandler();
 	
-	private static String userInput = String.valueOf('\0');
+	private static String userInput = "";
+	private static String key = "";
 	
 	private static String EncodedTranslate = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
@@ -87,6 +93,9 @@ public class EnigmaMachine {
 	private static int Rotor2Pos = 1;
 	private static int Rotor3Pos = 1;
 	
+	private static boolean[] RotorSelected = new boolean[4];
+	private static boolean[] RotorPositioned = new boolean[4];
+	
 	
 	
   /*************************************************************************************************************************************************************/	
@@ -97,7 +106,7 @@ public class EnigmaMachine {
 	 */
 	public static void main(String[] args) {
 		
-		new EnigmaMachine();
+		new EnigmaMachine();		
 		
 	}
 	
@@ -109,15 +118,155 @@ public class EnigmaMachine {
 	 * Create the application.
 	 */
 	public EnigmaMachine() {
-		
-		for(index = 0; index < 26; index++) {
-			Reflector[0][index] = EncodedTranslate.charAt(index);
-			Reflector[1][index] = EncodedReflector1.charAt(index);
-		}
-		
-		gui.GUI(kHandler, r1Handler, r2Handler, r3Handler, p1Handler, p2Handler, p3Handler);
+
+		SetReflector();
+		gui.GUI(kHandler, r1Handler, r2Handler, r3Handler, p1Handler, p2Handler, p3Handler, mHandler, bHandler);
 		dManager.updateDisplay();
 	
+	}
+	
+	
+  /*************************************************************************************************************************************************************/
+	//*********Clear All********//
+	
+	public static void Clear() {
+		
+//		gui.frame.dispatchEvent(new WindowEvent(gui.frame, WindowEvent.WINDOW_CLOSING)); 	//Lazy man way to reset program. Basically shortcut of close 
+//		new EnigmaMachine();																//and start again.
+		
+		userInput = "";
+		key = "";
+		
+		for (int index = 0 ; index < 4; index++) {
+			RotorSelected[index] = false;
+			RotorPositioned[index] = false;
+		}
+		
+		for(int col1 = 0 ; col1 < 2 ; col1 ++) {
+			for (int col2 = 0; col2 < 26 ; col2++) {
+				RotorSlot1[col1][col2] = 0;
+				RotorSlot2[col1][col2] = 0;
+				RotorSlot3[col1][col2] = 0;
+			}
+		}
+		
+		Rotor1Pos = 1;
+		Rotor2Pos = 1;
+		Rotor3Pos = 1;
+		
+		SetReflector();
+		
+		dManager.resetDisplay();
+		
+	}
+	
+	
+  /*************************************************************************************************************************************************************/
+	//*********Output Text********//
+	
+	public static void PrintKey() {
+		
+		String seldRot1 = null, seldRot2 = null, seldRot3 = null;
+		
+		switch (selectedRotor1) {
+			case 1:
+				seldRot1 = "I";
+				break;
+			case 2:
+				seldRot1 = "II";
+				break;
+			case 3:
+				seldRot1 = "III";
+				break;
+			case 4:
+				seldRot1 = "IV";
+				break;
+			case 5:
+				seldRot1 = "V";
+				break;
+			
+			default :
+				seldRot1 = "";
+		}
+		
+		switch (selectedRotor2) {
+			case 1:
+				seldRot2 = "I";
+				break;
+			case 2:
+				seldRot2 = "II";
+				break;
+			case 3:
+				seldRot2 = "III";
+				break;
+			case 4:
+				seldRot2 = "IV";
+				break;
+			case 5:
+				seldRot2 = "V";
+				break;
+			
+			default :
+				seldRot2 = "";
+		}
+		
+		switch (selectedRotor3) {
+			case 1:
+				seldRot3 = "I";
+				break;
+			case 2:
+				seldRot3 = "II";
+				break;
+			case 3:
+				seldRot3 = "III";
+				break;
+			case 4:
+				seldRot3 = "IV";
+				break;
+			case 5:
+				seldRot3 = "V";
+				break;
+			
+			default :
+				seldRot3 = "";
+		}
+		
+		key  = "R1: " + seldRot1 + " : " + RotorSlot1[1][0] + "\n";
+		key += "R2: " + seldRot2 + " : " + RotorSlot2[1][0] + "\n";
+		key += "R3: " + seldRot3 + " : " + RotorSlot3[1][0] + "\n";
+		
+		BufferedWriter outKey = null;
+		
+		try {
+			outKey = new BufferedWriter( new FileWriter( "Key.txt") );
+			outKey.write(String.valueOf(key));
+			outKey.close();
+		}
+		catch (Exception e) {
+			System.out.println("Error with printing Key");
+			System.out.println(e.getMessage());
+		}
+		
+		return;
+	}
+	
+	
+	public static void PrintText() {
+		
+		BufferedWriter outFile = null;
+		
+		try {
+			outFile = new BufferedWriter( new FileWriter( "Message.txt ") );
+			outFile.write( String.valueOf(userInput) );
+			outFile.close();
+		}
+		catch ( Exception e) {
+			System.out.println("Error with printing Encrypted Message");
+			System.out.println(e.getMessage());
+		}
+		
+		Clear();
+		
 	}
 	
 	
@@ -244,6 +393,17 @@ public class EnigmaMachine {
 		}
 		else {
 			System.out.println("Invalid rotorSelect available");
+		}
+		
+		return;
+	}
+	
+	
+	public static void SetReflector() {
+		
+		for(index = 0; index < 26; index++) {
+			Reflector[0][index] = EncodedTranslate.charAt(index);
+			Reflector[1][index] = EncodedReflector1.charAt(index);
 		}
 		
 		return;
@@ -492,6 +652,26 @@ public class EnigmaMachine {
 	}
 	
 	
+	public static boolean CheckAllSet() {
+		
+		boolean AllSet = false;
+		
+		if (RotorSelected[1] == true || RotorSelected[2] == true || RotorSelected[3] == true) {
+			AllSet = true;
+		}
+		
+		if (RotorPositioned[1] == true || RotorPositioned[2] == true || RotorPositioned[3] == true) {
+			AllSet = true;
+		}
+		
+		if (AllSet == true && key.length() == 0) {
+			PrintKey();
+		}
+		
+		return AllSet;
+	}
+	
+	
   /*************************************************************************************************************************************************************/
 	
 	public static String SendUserInput() {
@@ -518,12 +698,16 @@ public class EnigmaMachine {
 		public class KeyPressHandler implements KeyListener {
 
 			public void keyPressed(KeyEvent e) {
-				ascii = e.getKeyCode();
-				pressedKey = e.getKeyChar();
-				pressedKey = Character.toUpperCase(pressedKey);
-				EnigmaMachine.PassKeyPress();
-				dManager.updateDisplay();
 				
+				if ( CheckAllSet() == true ) {	
+						ascii = e.getKeyCode();
+						pressedKey = e.getKeyChar();
+						pressedKey = Character.toUpperCase(pressedKey);
+						EnigmaMachine.PassKeyPress();
+						dManager.updateDisplay();
+					}
+				else {
+				}
 			}
 
 			public void keyTyped(KeyEvent e) {
@@ -538,69 +722,81 @@ public class EnigmaMachine {
 			public void actionPerformed(ActionEvent e) {
 				String r1 = e.getSource().toString();
 				r1 = RotorActionSubString.makeSubStr(r1);
-				switch (r1) {
 				
-					case "I":
-						selectedRotor1 = 1;
-						gui.comboBoxRotorSelect2.removeItem("I");
-						gui.comboBoxRotorSelect3.removeItem("I");
-						EnigmaMachine.SetRotor1(1);
-						gui.comboBoxRotorSelect1.setVisible(false);
-						gui.comboBoxRotor1Display.setText("I");
-						gui.comboBoxRotor1Display.setVisible(true);
-						break;
-						
-					case "II":
-						selectedRotor1 = 2;
-						gui.comboBoxRotorSelect2.removeItem("II");
-						gui.comboBoxRotorSelect3.removeItem("II");
-						EnigmaMachine.SetRotor1(2);
-						gui.comboBoxRotorSelect1.setVisible(false);
-						gui.comboBoxRotor1Display.setText("II");
-						gui.comboBoxRotor1Display.setVisible(true);
-						break;
-						
-					case "III":
-						selectedRotor1 = 3;
-						gui.comboBoxRotorSelect2.removeItem("III");
-						gui.comboBoxRotorSelect3.removeItem("III");
-						EnigmaMachine.SetRotor1(3);
-						gui.comboBoxRotorSelect1.setVisible(false);
-						gui.comboBoxRotor1Display.setText("III");
-						gui.comboBoxRotor1Display.setVisible(true);
-						break;
-						
-					case "IV":
-						selectedRotor1 = 4;
-						gui.comboBoxRotorSelect2.removeItem("IV");
-						gui.comboBoxRotorSelect3.removeItem("IV");
-						EnigmaMachine.SetRotor1(4);
-						gui.comboBoxRotorSelect1.setVisible(false);
-						gui.comboBoxRotor1Display.setText("IV");
-						gui.comboBoxRotor1Display.setVisible(true);
-						break;
-						
-					case "V":
-						selectedRotor1 = 5;
-						gui.comboBoxRotorSelect2.removeItem("V");
-						gui.comboBoxRotorSelect3.removeItem("V");
-						EnigmaMachine.SetRotor1(5);
-						gui.comboBoxRotorSelect1.setVisible(false);
-						gui.comboBoxRotor1Display.setText("V");
-						gui.comboBoxRotor1Display.setVisible(true);
-						break;
+				if (r1.isEmpty()) {
+				}
+				else {
+					switch (r1) {
 					
-					case "\0":
-						break;
+						case "I":
+							selectedRotor1 = 1;
+							gui.comboBoxRotorSelect2.removeItem("I");
+							gui.comboBoxRotorSelect3.removeItem("I");
+							EnigmaMachine.SetRotor1(1);
+							gui.comboBoxRotorSelect1.setVisible(false);
+							gui.comboBoxRotor1Display.setText("I");
+							gui.comboBoxRotor1Display.setVisible(true);
+							break;
+							
+						case "II":
+							selectedRotor1 = 2;
+							gui.comboBoxRotorSelect2.removeItem("II");
+							gui.comboBoxRotorSelect3.removeItem("II");
+							EnigmaMachine.SetRotor1(2);
+							gui.comboBoxRotorSelect1.setVisible(false);
+							gui.comboBoxRotor1Display.setText("II");
+							gui.comboBoxRotor1Display.setVisible(true);
+							break;
+							
+						case "III":
+							selectedRotor1 = 3;
+							gui.comboBoxRotorSelect2.removeItem("III");
+							gui.comboBoxRotorSelect3.removeItem("III");
+							EnigmaMachine.SetRotor1(3);
+							gui.comboBoxRotorSelect1.setVisible(false);
+							gui.comboBoxRotor1Display.setText("III");
+							gui.comboBoxRotor1Display.setVisible(true);
+							break;
+							
+						case "IV":
+							selectedRotor1 = 4;
+							gui.comboBoxRotorSelect2.removeItem("IV");
+							gui.comboBoxRotorSelect3.removeItem("IV");
+							EnigmaMachine.SetRotor1(4);
+							gui.comboBoxRotorSelect1.setVisible(false);
+							gui.comboBoxRotor1Display.setText("IV");
+							gui.comboBoxRotor1Display.setVisible(true);
+							break;
+							
+						case "V":
+							selectedRotor1 = 5;
+							gui.comboBoxRotorSelect2.removeItem("V");
+							gui.comboBoxRotorSelect3.removeItem("V");
+							EnigmaMachine.SetRotor1(5);
+							gui.comboBoxRotorSelect1.setVisible(false);
+							gui.comboBoxRotor1Display.setText("V");
+							gui.comboBoxRotor1Display.setVisible(true);
+							break;
 						
-					default:
-						System.out.println("RSlot1 Error");	
+						case "\0":
+							break;
+							
+						default:
+							System.out.println("RSlot1 Error");	
+					}
+					
+					for (int index = 0; index < 26; index++) {
+						gui.RotorPos1.insertItemAt(RotorSlot1[1][index], index);
+					}
+					
+					if (r1.equals("\0")) {
+					}
+					else {
+						RotorSelected[1] = true;
+						gui.RotorPos1.setVisible(true);
+						gui.RotorPos1.setSelectedItem(0);
+					}
 				}
-				
-				for (int index = 0; index < 26; index++) {
-					gui.RotorPos1.insertItemAt(RotorSlot1[1][index], index);
-				}
-				gui.RotorPos1.setVisible(true);
 			}
 		} //end of class RotorHandler
 		
@@ -608,69 +804,80 @@ public class EnigmaMachine {
 			public void actionPerformed(ActionEvent e) {
 				String r2 = e.getSource().toString();
 				r2 = RotorActionSubString.makeSubStr(r2);
-				switch (r2) {
-				
-					case "I":
-						selectedRotor2 = 1;
-						gui.comboBoxRotorSelect1.removeItem("I");
-						gui.comboBoxRotorSelect3.removeItem("I");
-						EnigmaMachine.SetRotor2(1);
-						gui.comboBoxRotorSelect2.setVisible(false);
-						gui.comboBoxRotor2Display.setText("I");
-						gui.comboBoxRotor2Display.setVisible(true);
-						break;
-						
-					case "II":
-						selectedRotor2 = 2;
-						gui.comboBoxRotorSelect1.removeItem("II");
-						gui.comboBoxRotorSelect3.removeItem("II");
-						EnigmaMachine.SetRotor2(2);
-						gui.comboBoxRotorSelect2.setVisible(false);
-						gui.comboBoxRotor2Display.setText("II");
-						gui.comboBoxRotor2Display.setVisible(true);
-						break;
-						
-					case "III":
-						selectedRotor2 = 3;
-						gui.comboBoxRotorSelect1.removeItem("III");
-						gui.comboBoxRotorSelect3.removeItem("III");
-						EnigmaMachine.SetRotor2(3);
-						gui.comboBoxRotorSelect2.setVisible(false);
-						gui.comboBoxRotor2Display.setText("III");
-						gui.comboBoxRotor2Display.setVisible(true);
-						break;
-						
-					case "IV":
-						selectedRotor2 = 4;
-						gui.comboBoxRotorSelect1.removeItem("IV");
-						gui.comboBoxRotorSelect3.removeItem("IV");
-						EnigmaMachine.SetRotor2(4);
-						gui.comboBoxRotorSelect2.setVisible(false);
-						gui.comboBoxRotor2Display.setText("IV");
-						gui.comboBoxRotor2Display.setVisible(true);
-						break;
-						
-					case "V":
-						selectedRotor2 = 5;
-						gui.comboBoxRotorSelect1.removeItem("V");
-						gui.comboBoxRotorSelect3.removeItem("V");
-						EnigmaMachine.SetRotor2(5);
-						gui.comboBoxRotorSelect2.setVisible(false);
-						gui.comboBoxRotor2Display.setText("V");
-						gui.comboBoxRotor2Display.setVisible(true);
-						break;
-						
-					case "\0":
-						break;
-						
-					default:
-						System.out.println("RSlot2 Error");	
+				if (r2.isEmpty()) {
 				}
-				
-				for (int index = 0; index < 26; index++) {
-					gui.RotorPos2.insertItemAt(RotorSlot2[1][index], index);
+				else {
+					switch (r2) {
+					
+						case "I":
+							selectedRotor2 = 1;
+							gui.comboBoxRotorSelect1.removeItem("I");
+							gui.comboBoxRotorSelect3.removeItem("I");
+							EnigmaMachine.SetRotor2(1);
+							gui.comboBoxRotorSelect2.setVisible(false);
+							gui.comboBoxRotor2Display.setText("I");
+							gui.comboBoxRotor2Display.setVisible(true);
+							break;
+							
+						case "II":
+							selectedRotor2 = 2;
+							gui.comboBoxRotorSelect1.removeItem("II");
+							gui.comboBoxRotorSelect3.removeItem("II");
+							EnigmaMachine.SetRotor2(2);
+							gui.comboBoxRotorSelect2.setVisible(false);
+							gui.comboBoxRotor2Display.setText("II");
+							gui.comboBoxRotor2Display.setVisible(true);
+							break;
+							
+						case "III":
+							selectedRotor2 = 3;
+							gui.comboBoxRotorSelect1.removeItem("III");
+							gui.comboBoxRotorSelect3.removeItem("III");
+							EnigmaMachine.SetRotor2(3);
+							gui.comboBoxRotorSelect2.setVisible(false);
+							gui.comboBoxRotor2Display.setText("III");
+							gui.comboBoxRotor2Display.setVisible(true);
+							break;
+							
+						case "IV":
+							selectedRotor2 = 4;
+							gui.comboBoxRotorSelect1.removeItem("IV");
+							gui.comboBoxRotorSelect3.removeItem("IV");
+							EnigmaMachine.SetRotor2(4);
+							gui.comboBoxRotorSelect2.setVisible(false);
+							gui.comboBoxRotor2Display.setText("IV");
+							gui.comboBoxRotor2Display.setVisible(true);
+							break;
+							
+						case "V":
+							selectedRotor2 = 5;
+							gui.comboBoxRotorSelect1.removeItem("V");
+							gui.comboBoxRotorSelect3.removeItem("V");
+							EnigmaMachine.SetRotor2(5);
+							gui.comboBoxRotorSelect2.setVisible(false);
+							gui.comboBoxRotor2Display.setText("V");
+							gui.comboBoxRotor2Display.setVisible(true);
+							break;
+							
+						case "\0":
+							break;
+							
+						default:
+							System.out.println("RSlot2 Error");	
+					}
+					
+					for (int index = 0; index < 26; index++) {
+						gui.RotorPos2.insertItemAt(RotorSlot2[1][index], index);
+					}
+					
+					if (r2.equals("\0")) {
+					}
+					else {
+						RotorSelected[2] = true;
+						gui.RotorPos2.setVisible(true);
+						gui.RotorPos2.setSelectedItem(0);
+					}
 				}
-				gui.RotorPos2.setVisible(true);
 			}
 		} //end of class RotorHandler
 		
@@ -678,69 +885,82 @@ public class EnigmaMachine {
 			public void actionPerformed(ActionEvent e) {
 				String r3 = e.getSource().toString();
 				r3 = RotorActionSubString.makeSubStr(r3);
-				switch (r3) {
+				if (r3.isEmpty()) {
+				}
+				else {
+					switch (r3) {
+					
+						case "I":
+							selectedRotor3 = 1;
+							gui.comboBoxRotorSelect1.removeItem("I");
+							gui.comboBoxRotorSelect2.removeItem("I");
+							EnigmaMachine.SetRotor3(1);
+							gui.comboBoxRotorSelect3.setVisible(false);
+							gui.comboBoxRotor3Display.setText("I");
+							gui.comboBoxRotor3Display.setVisible(true);
+							break;
+						
+						case "II":
+							selectedRotor3 = 2;
+							gui.comboBoxRotorSelect1.removeItem("II");
+							gui.comboBoxRotorSelect2.removeItem("II");
+							EnigmaMachine.SetRotor3(2);
+							gui.comboBoxRotorSelect3.setVisible(false);
+							gui.comboBoxRotor3Display.setText("II");
+							gui.comboBoxRotor3Display.setVisible(true);
+							break;
+							
+						case "III":
+							selectedRotor3 = 3;
+							gui.comboBoxRotorSelect1.removeItem("III");
+							gui.comboBoxRotorSelect2.removeItem("III");
+							EnigmaMachine.SetRotor3(3);
+							gui.comboBoxRotorSelect3.setVisible(false);
+							gui.comboBoxRotor3Display.setText("III");
+							gui.comboBoxRotor3Display.setVisible(true);
+							break;
+							
+						case "IV":
+							selectedRotor3 = 4;
+							gui.comboBoxRotorSelect1.removeItem("IV");
+							gui.comboBoxRotorSelect2.removeItem("IV");
+							EnigmaMachine.SetRotor3(4);
+							gui.comboBoxRotorSelect3.setVisible(false);
+							gui.comboBoxRotor3Display.setText("IV");
+							gui.comboBoxRotor3Display.setVisible(true);
+							break;
+							
+						case "V":
+							selectedRotor3 = 5;
+							gui.comboBoxRotorSelect1.removeItem("V");
+							gui.comboBoxRotorSelect2.removeItem("V");
+							EnigmaMachine.SetRotor3(5);
+							gui.comboBoxRotorSelect3.setVisible(false);
+							gui.comboBoxRotor3Display.setText("V");
+							gui.comboBoxRotor3Display.setVisible(true);
+							break;
+							
+						case "\0":
+							break;
+							
+						default:
+							System.out.println("RSlot3 Error");	
+					}
+					
+					for (int index = 0; index < 26; index++) {
+						gui.RotorPos3.insertItemAt(RotorSlot3[1][index], index);
+					}
+					
+					if (r3.equals("\0")) {
+					}
+					else {
+						RotorSelected[3] = true;
+						gui.RotorPos3.setVisible(true);
+						gui.RotorPos3.setSelectedItem(0);
+					}
 				
-					case "I":
-						selectedRotor3 = 1;
-						gui.comboBoxRotorSelect1.removeItem("I");
-						gui.comboBoxRotorSelect2.removeItem("I");
-						EnigmaMachine.SetRotor3(1);
-						gui.comboBoxRotorSelect3.setVisible(false);
-						gui.comboBoxRotor3Display.setText("I");
-						gui.comboBoxRotor3Display.setVisible(true);
-						break;
-						
-					case "II":
-						selectedRotor3 = 2;
-						gui.comboBoxRotorSelect1.removeItem("II");
-						gui.comboBoxRotorSelect2.removeItem("II");
-						EnigmaMachine.SetRotor3(2);
-						gui.comboBoxRotorSelect3.setVisible(false);
-						gui.comboBoxRotor3Display.setText("II");
-						gui.comboBoxRotor3Display.setVisible(true);
-						break;
-						
-					case "III":
-						selectedRotor3 = 3;
-						gui.comboBoxRotorSelect1.removeItem("III");
-						gui.comboBoxRotorSelect2.removeItem("III");
-						EnigmaMachine.SetRotor3(3);
-						gui.comboBoxRotorSelect3.setVisible(false);
-						gui.comboBoxRotor3Display.setText("III");
-						gui.comboBoxRotor3Display.setVisible(true);
-						break;
-						
-					case "IV":
-						selectedRotor3 = 4;
-						gui.comboBoxRotorSelect1.removeItem("IV");
-						gui.comboBoxRotorSelect2.removeItem("IV");
-						EnigmaMachine.SetRotor3(4);
-						gui.comboBoxRotorSelect3.setVisible(false);
-						gui.comboBoxRotor3Display.setText("IV");
-						gui.comboBoxRotor3Display.setVisible(true);
-						break;
-						
-					case "V":
-						selectedRotor3 = 5;
-						gui.comboBoxRotorSelect1.removeItem("V");
-						gui.comboBoxRotorSelect2.removeItem("V");
-						EnigmaMachine.SetRotor3(5);
-						gui.comboBoxRotorSelect3.setVisible(false);
-						gui.comboBoxRotor3Display.setText("V");
-						gui.comboBoxRotor3Display.setVisible(true);
-						break;
-						
-					case "\0":
-						break;
-						
-					default:
-						System.out.println("RSlot3 Error");	
 				}
 				
-				for (int index = 0; index < 26; index++) {
-					gui.RotorPos3.insertItemAt(RotorSlot3[1][index], index);
-				}
-				gui.RotorPos3.setVisible(true);
 			}
 		} //end of class RotorHandler
 		
@@ -754,18 +974,27 @@ public class EnigmaMachine {
 			public void actionPerformed(ActionEvent e) {
 				String rp1 = e.getSource().toString();
 				rp1 = RotorActionSubString.makeSubStr(rp1);
-				char setChar = rp1.charAt(0);
-				
-				gui.RotorPos1.setVisible(false);
-				gui.SetRotorPos1.setVisible(true);
-				gui.SetRotorPos1.setText(String.valueOf(setChar));
-				
-				int search = 0;
-				while (RotorSlot1[1][search] != setChar) {
-					search++;
+			
+				if (rp1.isEmpty()) {
+					gui.RotorPos1.removeAllItems();
 				}
-				search++;
-				PositionSet(1, selectedRotor1, search);
+				else {
+				
+					char setChar = rp1.charAt(0);
+					
+					gui.RotorPos1.setVisible(false);
+					gui.SetRotorPos1.setVisible(true);
+					gui.SetRotorPos1.setText(String.valueOf(setChar));
+					
+					int search = 0;
+					while (RotorSlot1[1][search] != setChar) {
+						search++;
+					}
+					search++;
+					PositionSet(1, selectedRotor1, search);
+					
+					RotorPositioned[1] = true;
+				}
 			}
 			
 		}
@@ -775,41 +1004,94 @@ public class EnigmaMachine {
 			public void actionPerformed(ActionEvent e) {
 				String rp2 = e.getSource().toString();
 				rp2 = RotorActionSubString.makeSubStr(rp2);
-				char setChar = rp2.charAt(0);
 				
-				gui.RotorPos2.setVisible(false);
-				gui.SetRotorPos2.setVisible(true);
-				gui.SetRotorPos2.setText(String.valueOf(setChar));
-				
-				int search = 0;
-				while (RotorSlot2[1][search] != setChar) {
-					search++;
+				if (rp2.isEmpty()) {
+					gui.RotorPos2.removeAllItems();
 				}
-				search++;
-				PositionSet(2, selectedRotor2, search);
+				else {
+				
+					char setChar = rp2.charAt(0);
+					
+					gui.RotorPos2.setVisible(false);
+					gui.SetRotorPos2.setVisible(true);
+					gui.SetRotorPos2.setText(String.valueOf(setChar));
+					
+					int search = 0;
+					while (RotorSlot2[1][search] != setChar) {
+						search++;
+					}
+					search++;
+					PositionSet(2, selectedRotor2, search);
+					
+					RotorPositioned[2] = true;
+				}
 			}
-			
 		}
 		
 		public class R3PosHandler implements ActionListener{
 
-
 			public void actionPerformed(ActionEvent e) {
 				String rp3 = e.getSource().toString();
 				rp3 = RotorActionSubString.makeSubStr(rp3);
-				char setChar = rp3.charAt(0);
 				
-				gui.RotorPos3.setVisible(false);
-				gui.SetRotorPos3.setVisible(true);
-				gui.SetRotorPos3.setText(String.valueOf(setChar));
-				
-				int search = 0;
-				while (RotorSlot3[1][search] != setChar) {
-					search++;
+				if (rp3.isEmpty()) {
+					gui.RotorPos3.removeAllItems();
 				}
-				search++;
-				PositionSet(3, selectedRotor3, search);
+				else {
+					char setChar = rp3.charAt(0);
+					
+					gui.RotorPos3.setVisible(false);
+					gui.SetRotorPos3.setVisible(true);
+					gui.SetRotorPos3.setText(String.valueOf(setChar));
+					
+					int search = 0;
+					while (RotorSlot3[1][search] != setChar) {
+						search++;
+					}
+					search++;
+					PositionSet(3, selectedRotor3, search);
+					
+					RotorPositioned[3] = true;
+				}
+				
 			}
+			
+		}
+		
+		
+		public class MenuHandler implements MenuListener{
+			
+			public void menuSelected(MenuEvent e) {
+				
+				about.About();
+				
+			}
+			
+			public void menuDeselected(MenuEvent e) {
+			}
+			public void menuCanceled(MenuEvent e) {
+			}
+		}
+		
+		
+		public class ButtonHandler implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+
+				String btn = String.valueOf(e);
+				btn = GetButton.ButtonSubstring(btn);
+				
+				if ( btn.contentEquals("Clear") ) {
+					Clear();
+				}
+				else if ( btn.contentEquals("Print to Text") ) {
+					PrintText();
+				}
+				else {
+					System.out.println("Error occured on button selection");
+				}
+				
+			}
+			
 			
 		}
 		
@@ -827,6 +1109,19 @@ public class EnigmaMachine {
 				return e;
 			}
 			
+		}
+		
+		public static class GetButton {
+			
+			public static String ButtonSubstring(String e) {
+				
+				int subStrStart = e.lastIndexOf("cmd=") + 4;
+				int subStrEnd = e.indexOf(',', subStrStart);
+				e = e.substring(subStrStart, subStrEnd);
+				
+				return e;
+			 }
+			 
 		}
 	
 	
